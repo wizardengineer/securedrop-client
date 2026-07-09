@@ -31,6 +31,7 @@ describe("PrintWizard accessibility", () => {
     filename: "/path/to/testfile.pdf",
     decrypted_size: null,
     isDoubleEncrypted: false,
+    doubleEncryptedKeyFingerprint: null,
   };
 
   it("has no axe violations when closed", async () => {
@@ -72,6 +73,7 @@ describe("PrintWizard Component", () => {
     filename: "/path/to/testfile.pdf",
     decrypted_size: null,
     isDoubleEncrypted: false,
+    doubleEncryptedKeyFingerprint: null,
   };
 
   const mockPrintPayload: PrintPayload = {

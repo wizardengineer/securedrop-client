@@ -122,6 +122,7 @@ const mockSourceWithItems: SourceWithItems = {
       filename: null,
       decrypted_size: null,
       isDoubleEncrypted: false,
+      doubleEncryptedKeyFingerprint: null,
       fetch_progress: 1024,
       fetch_status: 3,
     },
@@ -147,6 +148,7 @@ const createMessageItem = (
   filename: null,
   decrypted_size: null,
   isDoubleEncrypted: false,
+  doubleEncryptedKeyFingerprint: null,
   fetch_progress: 1024,
   fetch_status: 3,
 });
@@ -170,6 +172,7 @@ const createReplyItem = (
   filename: null,
   decrypted_size: null,
   isDoubleEncrypted: false,
+  doubleEncryptedKeyFingerprint: null,
   fetch_progress: 1024,
   fetch_status: 3,
 });

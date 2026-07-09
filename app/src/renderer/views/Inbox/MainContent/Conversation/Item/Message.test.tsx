@@ -34,6 +34,7 @@ describe("Message accessibility", () => {
     fetch_progress: null,
     decrypted_size: null,
     isDoubleEncrypted: false,
+    doubleEncryptedKeyFingerprint: null,
   };
 
   it("has no axe violations for a message item", async () => {
@@ -67,6 +68,7 @@ describe("Message Component Memoization", () => {
     fetch_progress: null,
     decrypted_size: null,
     isDoubleEncrypted: false,
+    doubleEncryptedKeyFingerprint: null,
   };
   const mockOnUpdate = vi.fn();
   const mockOnDelete = vi.fn();
@@ -164,6 +166,7 @@ describe("Reply", () => {
     fetch_progress: null,
     decrypted_size: null,
     isDoubleEncrypted: false,
+    doubleEncryptedKeyFingerprint: null,
   };
 
   const mockJournalists: Array<{ uuid: string; data: JournalistMetadata }> = [
@@ -535,6 +538,7 @@ describe("Reply", () => {
       fetch_progress: null,
       decrypted_size: null,
       isDoubleEncrypted: false,
+      doubleEncryptedKeyFingerprint: null,
     };
 
     describe("when authenticated (online mode)", () => {
@@ -890,6 +894,7 @@ describe("Reply", () => {
       fetch_progress: null,
       decrypted_size: null,
       isDoubleEncrypted: false,
+      doubleEncryptedKeyFingerprint: null,
     };
 
     it("should display pending icon for pending replies", () => {
@@ -993,6 +998,7 @@ describe("Reply", () => {
       fetch_progress: null,
       decrypted_size: null,
       isDoubleEncrypted: false,
+      doubleEncryptedKeyFingerprint: null,
     };
 
     const sentReplyItem: Item = {
@@ -1013,6 +1019,7 @@ describe("Reply", () => {
       fetch_progress: null,
       decrypted_size: null,
       isDoubleEncrypted: false,
+      doubleEncryptedKeyFingerprint: null,
     };
 
     const seenReplyItem: Item = {
@@ -1033,6 +1040,7 @@ describe("Reply", () => {
       fetch_progress: null,
       decrypted_size: null,
       isDoubleEncrypted: false,
+      doubleEncryptedKeyFingerprint: null,
     };
 
     it("should show pending icon for pending replies", () => {
@@ -1125,6 +1133,7 @@ describe("Message and Reply delete button keyboard accessibility", () => {
     fetch_progress: null,
     decrypted_size: null,
     isDoubleEncrypted: false,
+    doubleEncryptedKeyFingerprint: null,
   };
 
   const mockReplyItem: Item = {
@@ -1145,6 +1154,7 @@ describe("Message and Reply delete button keyboard accessibility", () => {
     fetch_progress: null,
     decrypted_size: null,
     isDoubleEncrypted: false,
+    doubleEncryptedKeyFingerprint: null,
   };
 
   beforeEach(() => {
@@ -1268,6 +1278,7 @@ describe("Double-encryption badge", () => {
     fetch_progress: null,
     decrypted_size: null,
     isDoubleEncrypted: false,
+    doubleEncryptedKeyFingerprint: null,
   };
 
   const mockReplyItem: Item = {
@@ -1288,6 +1299,7 @@ describe("Double-encryption badge", () => {
     fetch_progress: null,
     decrypted_size: null,
     isDoubleEncrypted: false,
+    doubleEncryptedKeyFingerprint: null,
   };
 
   it("shows the badge on a double-encrypted message", () => {
@@ -1305,6 +1317,39 @@ describe("Double-encryption badge", () => {
     expect(screen.getByText("Source-encrypted")).toBeInTheDocument();
     // The message itself is still displayed
     expect(screen.getByText("A pre-encrypted message")).toBeInTheDocument();
+  });
+
+  it("shows a warning badge with the fingerprint in the tooltip when the inner layer used a non-submission key", async () => {
+    const user = userEvent.setup();
+    const { container } = renderWithProviders(
+      <Message
+        kind="message"
+        item={{
+          ...mockMessageItem,
+          isDoubleEncrypted: true,
+          doubleEncryptedKeyFingerprint:
+            "1234567890ABCDEF1234567890ABCDEF12345678",
+        }}
+        designation="Test Source"
+        onUpdate={vi.fn()}
+        onDelete={vi.fn()}
+      />,
+      { preloadedState: authState },
+    );
+
+    const badge = screen.getByText("Source-encrypted");
+    expect(badge).toBeInTheDocument();
+    // Warning icon instead of the padlock
+    expect(container.querySelector(".lucide-triangle-alert")).toBeTruthy();
+    expect(container.querySelector(".lucide-lock-keyhole")).toBeFalsy();
+
+    // The tooltip names the key's fingerprint, formatted in 4-char groups
+    await user.hover(badge);
+    expect(
+      await screen.findByText(
+        /1234 5678 90AB CDEF 1234 5678 90AB CDEF 1234 5678/,
+      ),
+    ).toBeInTheDocument();
   });
 
   it("does not show the badge on a normal message", () => {

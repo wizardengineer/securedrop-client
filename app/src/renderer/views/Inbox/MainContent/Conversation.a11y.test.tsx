@@ -131,6 +131,7 @@ const messageItem = (
   fetch_progress: 1024,
   fetch_status: 3,
   isDoubleEncrypted: false,
+  doubleEncryptedKeyFingerprint: null,
 });
 
 const replyItem = (
@@ -154,6 +155,7 @@ const replyItem = (
   fetch_progress: 512,
   fetch_status: 3,
   isDoubleEncrypted: false,
+  doubleEncryptedKeyFingerprint: null,
 });
 
 // ---------------------------------------------------------------------------
